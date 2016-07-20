@@ -1,0 +1,13 @@
+{
+  "name": "remote-ui-electron",
+  "version": "1.0.0",
+  "description": "An Electron client for ofxRemoteUi",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Local Projects",
+  "devDependencies": {
+    "electron-prebuilt": "^1.2.0"
+  }
+}

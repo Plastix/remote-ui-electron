@@ -12,6 +12,6 @@
 
   },
   "dependencies": {
-    "osc": "2.1.0"
+    "osc": "plastix/osc.js"
   }
 }

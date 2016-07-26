@@ -9,7 +9,6 @@
   "author": "Local Projects",
   "devDependencies": {
     "electron-prebuilt": "1.2.8"
-
   },
   "dependencies": {
     "osc": "plastix/osc.js"

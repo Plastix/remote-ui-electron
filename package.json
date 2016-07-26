@@ -8,9 +8,10 @@
   },
   "author": "Local Projects",
   "devDependencies": {
-    "electron-prebuilt": "^1.2.8"
+    "electron-prebuilt": "1.2.8"
+
   },
   "dependencies": {
-    "osc": "^2.1.0"
+    "osc": "2.1.0"
   }
 }

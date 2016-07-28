@@ -111,11 +111,7 @@ class Client {
 		if (this._connected) {
 
 			console.log("Disconnecting from server...")
-			this._connection.send({
-				address: "/CIAO"
-			})
-
-			this._connection.close()
+			this.send(constants.RUI_PACKET_DISCONNECT)
 			this._connected = false
 		} else {
 			throw "Client is not connected!"
@@ -143,6 +139,7 @@ class Client {
 	run() {
 		this.listenForServers(this.connect)
 	}
+
 
 
 }

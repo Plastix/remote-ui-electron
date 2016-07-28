@@ -1,5 +1,6 @@
 const osc = require('osc'),
-	constants = require('./constants.js')
+	constants = require('./constants.js'),
+	util = require('./util.js')
 
 // ofxRemoteUI Client class
 // This is the main abstraction for talking to the ofxRemoteUI server
@@ -14,6 +15,10 @@ class Client {
 		this.connected = false
 		this.commands = {}
 
+		// IP of computer on local network
+		this.NETWORK_IP = util.getIPV4()
+		this.DEBUG_MODE = true
+
 		// Register all commands in the ./commands directory
 		// Dynamic require snipet from http://stackoverflow.com/questions/5364928/node-js-require-all-files-in-a-folder
 		let normalizedPath = require("path").join(__dirname, COMMANDS_DIRECTORY)
@@ -27,7 +32,6 @@ class Client {
 			}, this)
 			// Inside of anoymous functions "this" is the global browser window
 			// Here we make sure to pass in the instance of the Client class
-
 	}
 
 	// Class methods
@@ -43,21 +47,25 @@ class Client {
 
 		broadcastPort.on(constants.OSC_PORT_MESSAGE, (message, timeTag, info) => {
 
-			// message reponse as an "args" array with 4 pieces of data
-			// args[0] = port num
-			// args[1] = computer name
-			// args[2] = binary (app) name
-			// args[3] = broadcast count
-			const IP = info.address
-			const PORT = message.args[0]
+			// TODO DEBUG ONLY: Connect to own computer only
+			if (!this.DEBUG_MODE || (this.DEBUG_MODE &&info.address == this.NETWORK_IP)) {
+
+				// message reponse as an "args" array with 4 pieces of data
+				// args[0] = port num
+				// args[1] = computer name
+				// args[2] = binary (app) name
+				// args[3] = broadcast count
+				const IP = info.address
+				const PORT = message.args[0]
 
 
-			// All we need is one broadcast packet so close the port
-			broadcastPort.close()
+				// All we need is one broadcast packet so close the port
+				broadcastPort.close()
 
-			console.log(`Found ofxRemoteUI server @ ${IP}:${PORT}!`)
-			console.log(`${message.args[2]} @ ${message.args[1]}`)
-			callback.call(this, IP, PORT)
+				console.log(`Found ofxRemoteUI server @ ${IP}:${PORT}!`)
+				console.log(`${message.args[2]} @ ${message.args[1]}`)
+				callback.call(this, IP, PORT)
+			}
 		})
 
 		// Open the port.
@@ -107,10 +115,6 @@ class Client {
 
 			this.connected = false
 		}
-	}
-
-	foo() {
-		console.log("bar!")
 	}
 
 	run() {

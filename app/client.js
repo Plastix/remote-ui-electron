@@ -11,23 +11,26 @@ class Client {
 		const COMMANDS_DIRECTORY = "commands"
 
 		// Member Attributes
-		this.connection = {}
-		this.connected = false
-		this.commands = {}
+		this._connection = {}
+		this._connected = false
+		this._commands = {}
 
 		// IP of computer on local network
-		this.NETWORK_IP = util.getIPV4()
-		this.DEBUG_MODE = true
+		this._networkIp = util.getIPV4()
+		this._debugMode = true
 
-		// Register all commands in the ./commands directory
+		console.log(`Debug Mode: ${this._debugMode}`)
+
+		// Register all _commands in the commands directory
 		// Dynamic require snipet from http://stackoverflow.com/questions/5364928/node-js-require-all-files-in-a-folder
 		let normalizedPath = require("path").join(__dirname, COMMANDS_DIRECTORY)
+		console.log(`Loading commands from ${normalizedPath}`)
 		require("fs").readdirSync(normalizedPath).forEach((file) => {
 				if (file.match(/\.js$/) !== null && file !== 'index.js') {
 					console.log(`Loaded command ${file}!`)
 					const cmd = require(`./${COMMANDS_DIRECTORY}/` + file);
 
-					this.commands[cmd.trigger] = cmd.execute
+					this._commands[cmd.trigger] = cmd.execute
 				}
 			}, this)
 			// Inside of anoymous functions "this" is the global browser window
@@ -37,18 +40,18 @@ class Client {
 	// Class methods
 
 	listenForServers(callback) {
-		console.log(`Listening on port ${constants.REMOTE_UI_BROADCAST_PORT} for ofxRemoteUI servers...`)
+		console.log(`Listening on port ${constants.RUI_BROADCAST_PORT} for ofxRemoteUI servers...`)
 
 		// Open a port to listen for Remote UI servers broadcasting their existence
 		const broadcastPort = new osc.UDPPort({
 			localAddress: constants.LOCAL_IP_ADDRESS,
-			localPort: constants.REMOTE_UI_BROADCAST_PORT
+			localPort: constants.RUI_BROADCAST_PORT
 		})
 
 		broadcastPort.on(constants.OSC_PORT_MESSAGE, (message, timeTag, info) => {
 
 			// TODO DEBUG ONLY: Connect to own computer only
-			if (!this.DEBUG_MODE || (this.DEBUG_MODE &&info.address == this.NETWORK_IP)) {
+			if (!this._debugMode || (this._debugMode && info.address == this._networkIp)) {
 
 				// message reponse as an "args" array with 4 pieces of data
 				// args[0] = port num
@@ -74,7 +77,7 @@ class Client {
 
 
 	connect(ip, port) {
-		this.connection = new osc.UDPPort({
+		this._connection = new osc.UDPPort({
 			localAddress: constants.LOCAL_IP_ADDRESS,
 			localPort: port + 1, // Remote UI server talks to the client on its port + 1
 			remoteAddress: ip,
@@ -83,37 +86,57 @@ class Client {
 
 		// On every OSC message from the ofxRemoteServer check if the OSC address
 		// matches a registered command and run it
-		this.connection.on(constants.OSC_PORT_MESSAGE, (message, timeTag, info) => {
-			console.log("Received OSC message", message)
+		this._connection.on(constants.OSC_PORT_MESSAGE, (message, timeTag, info) => {
+			console.log("Received OSC packet", message)
 
 			const trigger = message.address
-			if (trigger in this.commands) {
+			if (trigger in this._commands) {
 				console.log(`Executing command ${trigger}`)
-				this.commands[trigger](this)
+				this._commands[trigger](this)
 			}
 		})
 
-		// Wait for the port to be ready before sending to it
-		this.connection.on(constants.OSC_PORT_READY, () => {
-			console.log(`Connecting to server ${ip}:${port}...`)
-			this.connection.send({
-				address: constants.REMOTE_UI_PACKET_CONNECT
-			})
+		// Once we open the UDP port send a connection OSC packet
+		this._connection.on(constants.OSC_PORT_READY, () => {
+			this._connected = true
+			this.send(constants.RUI_PACKET_CONNECT)
 		})
 
-		this.connection.open()
+		console.log(`Connecting to server ${ip}:${port}...`)
+		this._connection.open()
 	}
 
 
 	disconnect() {
-		if (this.connected) {
+		if (this._connected) {
 
 			console.log("Disconnecting from server...")
-			this.connection.send({
+			this._connection.send({
 				address: "/CIAO"
 			})
 
-			this.connected = false
+			this._connection.close()
+			this._connected = false
+		} else {
+			throw "Client is not connected!"
+		}
+	}
+
+	send(command, args) {
+		if (this._connected) {
+
+			let packet = {
+				address: command
+			}
+
+			if (args !== undefined) {
+				packet.args = args
+			}
+
+			console.log("Sending OSC packet", packet)
+			this._connection.send(packet)
+		} else {
+			throw "Client is not connected!"
 		}
 	}
 

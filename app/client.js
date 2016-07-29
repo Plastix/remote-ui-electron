@@ -98,10 +98,11 @@ class Client {
 		this._connection.on(constants.OSC_PORT_MESSAGE, (message, timeTag, info) => {
 			console.log("Received OSC packet", message)
 
-			const trigger = message.address
+			const split = message.address.split(" ")
+			const trigger = split[0]
 			if (trigger in this._commands) {
 				console.log(`Executing command ${trigger}`)
-				this._commands[trigger](this)
+				this._commands[trigger](this, split, message.args)
 			}
 		})
 

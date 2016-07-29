@@ -8,6 +8,8 @@ module.exports = Object.freeze({
 	RUI_PACKET_DISCONNECT: "/CIAO",
 	RUI_PACKET_KEEP_ALIVE: "/TEST",
 	RUI_PACKET_REQUEST_PARAMS: "/REQU",
+	RUI_PACKET_SEND: "/SEND",
+	RUI_STATUS_OK: "OK",
 
 	// osc.js constants
 	OSC_PORT_READY: "ready",

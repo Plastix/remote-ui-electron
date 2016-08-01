@@ -142,7 +142,7 @@ class Client {
 				packet.args = args
 			}
 
-			console.log("Sending OSC packet", packet)
+			// console.log("Sending OSC packet", packet)
 			this._connection.send(packet)
 		} else {
 			throw "Client is not connected!"

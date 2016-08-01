@@ -16,3 +16,8 @@ exports.getIPV4 = function() {
 
 	return '0.0.0.0'
 }
+
+// Converts rgb format into CSS rgb format
+exports.rgb = function(r, g, b) {
+	return `rgb(${r}, ${g}, ${b})`
+}

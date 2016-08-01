@@ -10,6 +10,13 @@ module.exports = Object.freeze({
 	RUI_PACKET_REQUEST_PARAMS: "/REQU",
 	RUI_PACKET_SEND: "/SEND",
 	RUI_STATUS_OK: "OK",
+	RUI_ARG_FLOAT: "FLT",
+	RUI_ARG_INTEGER: "INT",
+	RUI_ARG_BOOLEAN: "BOL",
+	RUI_ARG_STRING: "STR",
+	RUI_ARG_ENUM: "ENU",
+	RUI_ARG_COLOR: "COL",
+	RUI_ARG_SPACER: "SPA",
 
 	// osc.js constants
 	OSC_PORT_READY: "ready",

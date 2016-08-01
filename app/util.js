@@ -21,3 +21,14 @@ exports.getIPV4 = function() {
 exports.rgb = function(r, g, b) {
 	return `rgb(${r}, ${g}, ${b})`
 }
+
+exports.roundFloat = function(num){
+	if(exports.isFloat(num)){
+		return num.toFixed(2)
+	}
+	return num
+}
+
+exports.isFloat = function(n) {
+   return n % 1 !== 0;
+}

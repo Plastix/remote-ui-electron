@@ -8,10 +8,12 @@ const setup = {}
 setup[constants.RUI_ARG_SPACER] = addSpacer
 setup[constants.RUI_ARG_FLOAT] = addNumber
 setup[constants.RUI_ARG_INTEGER] = addNumber
+setup[constants.RUI_ARG_BOOLEAN] = addBoolean
 
 const update = {}
 update[constants.RUI_ARG_FLOAT] = updateNumber
 update[constants.RUI_ARG_INTEGER] = updateNumber
+update[constants.RUI_ARG_BOOLEAN] = updateBoolean
 
 
 const paramList = document.getElementById("paramList");
@@ -21,7 +23,7 @@ exports.execute = function(client, message, args) {
 	const type = message[1]
 	const name = message[2]
 	const item = document.getElementById(name)
-	
+
 	// Check to see if our param is in the DOM
 	if (item === null) {
 		addItem()
@@ -39,7 +41,6 @@ exports.execute = function(client, message, args) {
 		if (type in setup) {
 			var div = setup[type](client, name, type, args)
 			div.id = name
-			div.className += "paramItem"
 
 
 			// For a spacer argument append the spacer directly to the paramList div
@@ -79,13 +80,13 @@ function addNumber(client, name, type, args) {
 
 	var div = document.createElement("div")
 	div.innerHTML = name
+	div.className += "paramItem"
 	var display = document.createElement("div")
 	display.className += "display"
 	display.innerHTML = CURRENT
 	div.appendChild(display)
 
-	var slider = document.createElement("INPUT")
-	slider.className += "slider"
+	var slider = document.createElement("input")
 	slider.type = "range"
 	slider.value = CURRENT
 	slider.defaultValue = CURRENT
@@ -99,9 +100,9 @@ function addNumber(client, name, type, args) {
 	}
 
 	// Input range changed callback
-	slider.oninput = function() {
+	slider.oninput = () => {
 		// Replace the first value of args with the current value of the slider
-		const value = parseFloat(slider.value);
+		const value = parseFloat(slider.value)
 		args[0] = value
 		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
 		client.send(message, args)
@@ -113,10 +114,36 @@ function addNumber(client, name, type, args) {
 }
 
 function updateNumber(div, args) {
-	var slider = div.getElementsByClassName("slider")[0]
+	var slider = div.getElementsByTagName("input")[0]
 	var display = div.getElementsByClassName("display")[0]
 
 	const CURRENT = util.roundFloat(args[0])
 	slider.value = CURRENT
 	display.innerHTML = CURRENT
+}
+
+function addBoolean(client, name, type, args) {
+	var div = document.createElement("div")
+	div.innerHTML = name
+	div.className += "paramItem"
+
+	var checkbox = document.createElement("input")
+	checkbox.type = 'checkbox'
+	checkbox.checked = args[0]
+
+	checkbox.onchange = () => {
+		args[0] = checkbox.checked ? 1 : 0  // RemoteUI wants an int param
+		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
+		client.send(message, args)
+	}
+
+	div.appendChild(checkbox)
+	return div
+}
+
+
+function updateBoolean(div, args) {
+	var checkbox = div.getElementsByTagName("input")[0]
+
+	checkbox.checked = args[0]
 }

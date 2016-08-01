@@ -10,6 +10,7 @@ setup[constants.RUI_ARG_FLOAT] = addNumber
 setup[constants.RUI_ARG_INTEGER] = addNumber
 setup[constants.RUI_ARG_BOOLEAN] = addBoolean
 setup[constants.RUI_ARG_STRING] = addString
+setup[constants.RUI_ARG_ENUM] = addEnum
 
 
 const update = {}
@@ -17,6 +18,7 @@ update[constants.RUI_ARG_FLOAT] = updateNumber
 update[constants.RUI_ARG_INTEGER] = updateNumber
 update[constants.RUI_ARG_BOOLEAN] = updateBoolean
 update[constants.RUI_ARG_STRING] = updateString
+update[constants.RUI_ARG_ENUM] = updateEnum
 
 
 
@@ -175,4 +177,45 @@ function updateString(div, args) {
 	var textbox = div.getElementsByTagName("input")[0]
 
 	textbox.value = args[0]
+}
+
+function addEnum(client, name, type, args) {
+	var div = document.createElement("div")
+	div.innerHTML = name
+	div.className += "paramItem"
+
+	const selected = args[0] + 3
+	const num = args[2]
+	var select = document.createElement("select")
+	for (var i = 3; i <= 3 + num; i++) {
+		const val = args[i]
+		var option = document.createElement("option")
+		option.value = i - 3
+		option.innerHTML = val
+		if (i == selected) {
+			option.setAttribute("selected", "")
+		}
+		select.appendChild(option)
+	}
+
+	select.onchange = () => {
+		args[0] = parseInt(select.value)
+		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
+		client.send(message, args)
+	}
+
+	div.appendChild(select)
+	return div
+}
+
+function updateEnum(div, args) {
+	const selected = args[0]
+
+	var options = document.getElementsByTagName("option")
+
+	for(var i = 0; i < options.length; i++){
+		options[i].removeAttribute("selected")
+	}
+
+	options[selected].setAttribute("selected", "")
 }

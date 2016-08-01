@@ -9,11 +9,15 @@ setup[constants.RUI_ARG_SPACER] = addSpacer
 setup[constants.RUI_ARG_FLOAT] = addNumber
 setup[constants.RUI_ARG_INTEGER] = addNumber
 setup[constants.RUI_ARG_BOOLEAN] = addBoolean
+setup[constants.RUI_ARG_STRING] = addString
+
 
 const update = {}
 update[constants.RUI_ARG_FLOAT] = updateNumber
 update[constants.RUI_ARG_INTEGER] = updateNumber
 update[constants.RUI_ARG_BOOLEAN] = updateBoolean
+update[constants.RUI_ARG_STRING] = updateString
+
 
 
 const paramList = document.getElementById("paramList");
@@ -132,7 +136,7 @@ function addBoolean(client, name, type, args) {
 	checkbox.checked = args[0]
 
 	checkbox.onchange = () => {
-		args[0] = checkbox.checked ? 1 : 0  // RemoteUI wants an int param
+		args[0] = checkbox.checked ? 1 : 0 // RemoteUI wants an int param
 		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
 		client.send(message, args)
 	}
@@ -146,4 +150,29 @@ function updateBoolean(div, args) {
 	var checkbox = div.getElementsByTagName("input")[0]
 
 	checkbox.checked = args[0]
+}
+
+function addString(client, name, type, args) {
+	var div = document.createElement("div")
+	div.innerHTML = name
+	div.className += "paramItem"
+
+	var textbox = document.createElement("input")
+	textbox.type = 'text'
+	textbox.value = args[0]
+
+	textbox.oninput = () => {
+		args[0] = textbox.value
+		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
+		client.send(message, args)
+	}
+
+	div.appendChild(textbox)
+	return div
+}
+
+function updateString(div, args) {
+	var textbox = div.getElementsByTagName("input")[0]
+
+	textbox.value = args[0]
 }

@@ -27,7 +27,10 @@ const paramList = document.getElementById("paramList");
 exports.execute = function(client, message, args) {
 
 	const type = message[1]
-	const name = message[2]
+
+	// Message argument is split by spaces
+	// Names may have spaces in them so we replace with _
+	const name = message.slice(2).join("_")
 	const item = document.getElementById(name)
 
 	// Check to see if our param is in the DOM
@@ -48,12 +51,11 @@ exports.execute = function(client, message, args) {
 			var div = setup[type](client, name, type, args)
 			div.id = name
 
-
 			// For a spacer argument append the spacer directly to the paramList div
 			if (type == constants.RUI_ARG_SPACER) {
 				paramList.appendChild(div)
 			} else { // For actual params, nest inside of the spacer div
-				const group = args[args.length - 1] // Param group is always last arg
+				const group = args[args.length - 1].split(" ").join("_") // Param group is always last arg
 				let spacer = document.getElementById(group)
 
 				// If we don't have a param group yet, create one

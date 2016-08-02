@@ -5,9 +5,19 @@ var client = require('./client.js'),
 	electron = require('electron')
 const constants = require('./constants.js')
 
-client.run()
+client.listenForServers()
 
-// Disconnect the client once the app is closed
-electron.ipcRenderer.on(constants.ELECTRON_QUIT_CHANNEL, (event, message) => {
-	client.disconnect()
-})
+var button = document.getElementById("connectButton")
+var select = document.getElementById("servers")
+
+button.onclick = () => {
+	const raw = select.value
+	if (raw !== "") {
+		if (!client.isConnected()) {
+			const value = raw.split(":")
+			client.connect(value[0], parseInt(value[1]))
+		} else {
+			client.disconnect()
+		}
+	}
+}

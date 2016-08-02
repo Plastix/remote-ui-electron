@@ -7,28 +7,21 @@ const osc = require('osc'),
 class Client {
 
 	constructor() {
-
-		const COMMANDS_DIRECTORY = "commands"
-
 		// Member Attributes
-		this._connection = {}
+		this._connection = null
+		this._broadcastPort = null
 		this._connected = false
 		this._commands = {}
-
-		// IP of computer on local network
-		this._networkIp = util.getIPV4()
-		this._debugMode = true
-
-		console.log(`Debug Mode: ${this._debugMode}`)
+		this._servers = {}
 
 		// Register all commands in the commands directory
 		// Dynamic require snipet from http://stackoverflow.com/questions/5364928/node-js-require-all-files-in-a-folder
-		let normalizedPath = require("path").join(__dirname, COMMANDS_DIRECTORY)
+		let normalizedPath = require("path").join(__dirname, constants.CLIENT_COMMANDS_FOLDER)
 		console.log(`Loading commands from ${normalizedPath}`)
 		require("fs").readdirSync(normalizedPath).forEach((file) => {
 				if (file.match(/\.js$/) !== null && file !== 'index.js') {
 					console.log(`Loaded command ${file}!`)
-					const cmd = require(`./${COMMANDS_DIRECTORY}/` + file);
+					const cmd = require(`./${constants.CLIENT_COMMANDS_FOLDER}/` + file);
 
 					this._commands[cmd.trigger] = cmd.execute
 				}
@@ -40,44 +33,70 @@ class Client {
 	// Class methods
 
 	// Opens a OSC port on constants.RUI_BROADCAST_PORT and listens for RemoteUI servers broadcasting their existence 
-	// It then calls connect on the server
-	listenForServers(callback) {
-		if (this._connected) {
-			throw "Client is already connected! Please disconnect first!"
-		}
-
+	listenForServers() {
 		console.log(`Listening on port ${constants.RUI_BROADCAST_PORT} for ofxRemoteUI servers...`)
 
 		// Open a port to listen for Remote UI servers broadcasting their existence
-		const broadcastPort = new osc.UDPPort({
+		this.broadcastPort = new osc.UDPPort({
 			localAddress: constants.LOCAL_IP_ADDRESS,
 			localPort: constants.RUI_BROADCAST_PORT
 		})
 
-		broadcastPort.on(constants.OSC_PORT_MESSAGE, (message, timeTag, info) => {
-
-			// TODO DEBUG ONLY: Connect to own computer only
-			if (!this._debugMode || (this._debugMode && info.address == this._networkIp)) {
-
-				// message reponse as an "args" array with 4 pieces of data
-				// args[0] = port num
-				// args[1] = computer name
-				// args[2] = binary (app) name
-				// args[3] = broadcast count
-				const IP = info.address
-				const PORT = message.args[0]
-
-
-				// All we need is one broadcast packet so close the port
-				broadcastPort.close()
-
-				console.log(`Found ofxRemoteUI server @ ${IP}:${PORT}!`)
-				console.log(`${message.args[2]} @ ${message.args[1]}`)
-				callback.call(this, IP, PORT)
+		this.broadcastPort.on(constants.OSC_PORT_MESSAGE, (message, timeTag, info) => {
+			// message reponse as an "args" array with 4 pieces of data
+			// args[0] = port num
+			// args[1] = computer name
+			// args[2] = binary (app) name
+			// args[3] = broadcast count
+			const INFO = {
+				ip: info.address,
+				port: message.args[0],
+				computerName: message.args[1],
+				appName: message.args[2],
+				seen: Date.now()
 			}
+
+			this._servers[INFO.ip] = INFO // Update the server info in the "map"
 		})
 
-		broadcastPort.open()
+		this.broadcastPort.open()
+
+		// Every so often clear servers that have "died"
+		setInterval(() => {
+			this.updateSeenServers()
+		}, 500)
+	}
+
+	updateSeenServers() {
+		var select = document.getElementById("servers")
+
+		Object.keys(this._servers).forEach(function(key) {
+			const INFO = this._servers[key];
+
+			if (document.getElementById(key) === null) {
+				var option = document.createElement("option")
+				option.value = `${INFO.ip}:${INFO.port}`
+				option.id = key
+				option.innerHTML = `${INFO.appName} @ ${INFO.computerName} (${INFO.ip}:${INFO.port})`
+
+				select.appendChild(option)
+			}
+
+			const lastSeen = ((Date.now() - INFO.seen) / 1000) % 60
+
+			if (lastSeen > constants.RUI_NEIGHBOR_DEATH_TIME) {
+				console.log(`Lost connection with ${key}!`)
+				delete this._servers[key]
+
+				var option = document.getElementById(key);
+				option.remove(option.selectedIndex)
+
+				if (select.length == 0) {
+					select.selectedIndex = -1
+				}
+			}
+
+		}, this);
 	}
 
 
@@ -113,6 +132,7 @@ class Client {
 		// Once we open the UDP port send a connection OSC packet
 		this._connection.on(constants.OSC_PORT_READY, () => {
 			this._connected = true
+			this.updateConnectButton()
 			this.send(constants.RUI_PACKET_CONNECT)
 		})
 
@@ -126,9 +146,14 @@ class Client {
 	disconnect() {
 		if (this._connected) {
 
+			// Clear all current params
+			this.clearParams()
+
 			console.log("Disconnecting from server...")
 			this.send(constants.RUI_PACKET_DISCONNECT)
 			this._connected = false
+
+			this.updateConnectButton()
 				// TODO
 				// We must close the port here in order for it to be acessible again
 				// However closing the port for some reason means our CIAO packet doesn't get sent
@@ -157,16 +182,22 @@ class Client {
 		}
 	}
 
-	// Listen for nearby RemoteUI servers and connect to the one whose message
-	// we recieve first
-	run() {
-		if (!this.connected) {
-			this.listenForServers(this.connect)
+	isConnected() {
+		return this._connected
+	}
+
+	updateConnectButton() {
+		const button = document.getElementById("connectButton")
+		if (this._connected) {
+			button.innerHTML = "Disconnect"
 		} else {
-			throw "Client is already connected! Please disconnect first!"
+			button.innerHTML = "Connect"
 		}
 	}
 
+	clearParams() {
+		document.getElementById("paramList").innerHTML = ""
+	}
 
 
 }

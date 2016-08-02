@@ -4,6 +4,7 @@ module.exports = Object.freeze({
 
 	// ofxRemoteUI constants
 	RUI_BROADCAST_PORT: 25748,
+	RUI_NEIGHBOR_DEATH_TIME: 2, // Seconds
 	RUI_PACKET_CONNECT: "/HELO",
 	RUI_PACKET_DISCONNECT: "/CIAO",
 	RUI_PACKET_KEEP_ALIVE: "/TEST",
@@ -17,6 +18,9 @@ module.exports = Object.freeze({
 	RUI_ARG_ENUM: "ENU",
 	RUI_ARG_COLOR: "COL",
 	RUI_ARG_SPACER: "SPA",
+
+	// remote-ui-electron constants
+	CLIENT_COMMANDS_FOLDER: "commands",
 
 	// osc.js constants
 	OSC_PORT_READY: "ready",

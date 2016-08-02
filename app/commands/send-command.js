@@ -77,7 +77,7 @@ exports.execute = function(client, message, args) {
 function addSpacer(client, name, type, args) {
 	var div = document.createElement("div")
 	div.className += "paramGroup"
-	div.innerHTML = name
+	div.innerHTML = args[0]
 	div.style.background = util.rgba(args[1], args[2], args[3], args[4])
 	return div
 }

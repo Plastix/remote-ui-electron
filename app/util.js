@@ -18,8 +18,9 @@ exports.getIPV4 = function() {
 }
 
 // Converts rgb format into CSS rgb format
-exports.rgb = function(r, g, b) {
-	return `rgb(${r}, ${g}, ${b})`
+exports.rgba = function(r, g, b, a) {
+	a = a / 255.0 // CSS wants alpha between 0-1 not 0-255
+	return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
 exports.roundFloat = function(num){

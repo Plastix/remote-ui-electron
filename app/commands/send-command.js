@@ -50,7 +50,6 @@ exports.execute = function(client, message, args) {
 		if (type in setup) {
 			var div = setup[type](client, name, type, args)
 			div.id = name
-
 			// For a spacer argument append the spacer directly to the paramList div
 			if (type == constants.RUI_ARG_SPACER) {
 				paramList.appendChild(div)
@@ -79,7 +78,7 @@ function addSpacer(client, name, type, args) {
 	var div = document.createElement("div")
 	div.className += "paramGroup"
 	div.innerHTML = name
-		// div.style.color = util.rgb(args[1], args[2], args[3])
+	div.style.background = util.rgba(args[1], args[2], args[3], args[4])
 	return div
 }
 
@@ -89,7 +88,7 @@ function addNumber(client, name, type, args) {
 	var div = document.createElement("div")
 	div.innerHTML = name
 	div.className += "paramItem"
-	var display = document.createElement("div")
+	var display = document.createElement("span")
 	display.className += "display"
 	display.innerHTML = CURRENT
 	div.appendChild(display)

@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>Remote UI Client</title>
-  </head>
-  <body>
+    <link rel="stylesheet" type="text/css" href="styles/remote-ui.css">
+</head>
+
+<body>
     <h1>Remote UI Client</h1>
-  </body>
+    <div id="paramList">
+    </div>
+</body>
+<script>
+// You can also require other files to run in this process
+require('./renderer.js')
+</script>
 
-  <div id="paramList">
-  </div>
-
-  <script>
-    // You can also require other files to run in this process
-    require('./renderer.js')
-  </script>
 </html>

@@ -11,6 +11,7 @@ setup[constants.RUI_ARG_INTEGER] = addNumber
 setup[constants.RUI_ARG_BOOLEAN] = addBoolean
 setup[constants.RUI_ARG_STRING] = addString
 setup[constants.RUI_ARG_ENUM] = addEnum
+setup[constants.RUI_ARG_COLOR] = addColor
 
 
 const update = {}
@@ -19,8 +20,7 @@ update[constants.RUI_ARG_INTEGER] = updateNumber
 update[constants.RUI_ARG_BOOLEAN] = updateBoolean
 update[constants.RUI_ARG_STRING] = updateString
 update[constants.RUI_ARG_ENUM] = updateEnum
-
-
+update[constants.RUI_ARG_COLOR] = updateColor
 
 const paramList = document.getElementById("paramList");
 
@@ -213,9 +213,39 @@ function updateEnum(div, args) {
 
 	var options = document.getElementsByTagName("option")
 
-	for(var i = 0; i < options.length; i++){
+	for (var i = 0; i < options.length; i++) {
 		options[i].removeAttribute("selected")
 	}
 
 	options[selected].setAttribute("selected", "")
+}
+
+function addColor(client, name, type, args) {
+	var div = document.createElement("div")
+	div.innerHTML = name
+	div.className += "paramItem"
+
+	// HTML 5 color picker only works in Chrome + Opera!
+	// Luckoly Electron runs on Chromium!
+	var color = document.createElement("input")
+	color.type = "color"
+	color.value = util.rgbToHex(args[0], args[1], args[2])
+
+	color.onchange = () => {
+		rgb = util.hexToRgb(color.value)
+		args[0] = rgb.r
+		args[1] = rgb.g
+		args[2] = rgb.b
+		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
+		client.send(message, args)
+	}
+
+	div.appendChild(color)
+	return div
+}
+
+function updateColor(div, args) {
+	var color = div.getElementsByTagName("input")[0]
+
+	color.value = util.rgbToHex(args[0], args[1], args[2])
 }

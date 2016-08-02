@@ -21,7 +21,7 @@ class Client {
 
 		console.log(`Debug Mode: ${this._debugMode}`)
 
-		// Register all _commands in the commands directory
+		// Register all commands in the commands directory
 		// Dynamic require snipet from http://stackoverflow.com/questions/5364928/node-js-require-all-files-in-a-folder
 		let normalizedPath = require("path").join(__dirname, COMMANDS_DIRECTORY)
 		console.log(`Loading commands from ${normalizedPath}`)

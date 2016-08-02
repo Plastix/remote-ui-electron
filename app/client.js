@@ -42,6 +42,10 @@ class Client {
 	// Opens a OSC port on constants.RUI_BROADCAST_PORT and listens for RemoteUI servers broadcasting their existence 
 	// It then calls connect on the server
 	listenForServers(callback) {
+		if (this._connected) {
+			throw "Client is already connected! Please disconnect first!"
+		}
+
 		console.log(`Listening on port ${constants.RUI_BROADCAST_PORT} for ofxRemoteUI servers...`)
 
 		// Open a port to listen for Remote UI servers broadcasting their existence
@@ -83,7 +87,7 @@ class Client {
 	// matching commands
 	connect(ip, port) {
 		if (this._connected) {
-			throw "Client is already connected!"
+			throw "Client is already connected! Please disconnect first!"
 		}
 
 		this._connection = new osc.UDPPort({
@@ -125,6 +129,10 @@ class Client {
 			console.log("Disconnecting from server...")
 			this.send(constants.RUI_PACKET_DISCONNECT)
 			this._connected = false
+				// TODO
+				// We must close the port here in order for it to be acessible again
+				// However closing the port for some reason means our CIAO packet doesn't get sent
+			this._connection.close()
 		} else {
 			throw "Client is not connected!"
 		}
@@ -155,7 +163,7 @@ class Client {
 		if (!this.connected) {
 			this.listenForServers(this.connect)
 		} else {
-			throw "Client is alredy connected!"
+			throw "Client is already connected! Please disconnect first!"
 		}
 	}
 

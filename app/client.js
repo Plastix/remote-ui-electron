@@ -70,30 +70,17 @@ class Client {
 	updateSeenServers() {
 		var select = document.getElementById("servers")
 
-		Object.keys(this._servers).forEach(function(key) {
-			const INFO = this._servers[key];
+		Object.keys(this._servers).forEach((ip) => {
+			const INFO = this._servers[ip];
 
-			if (document.getElementById(key) === null) {
-				var option = document.createElement("option")
-				option.value = `${INFO.ip}:${INFO.port}`
-				option.id = key
-				option.innerHTML = `${INFO.appName} @ ${INFO.computerName} (${INFO.ip}:${INFO.port})`
-
-				select.appendChild(option)
-			}
+			this.addServerToList(ip)
 
 			const lastSeen = ((Date.now() - INFO.seen) / 1000) % 60
-
 			if (lastSeen > constants.RUI_NEIGHBOR_DEATH_TIME) {
-				console.log(`Lost connection with ${key}!`)
-				delete this._servers[key]
+				console.log(`Lost connection with ${ip}!`)
+				delete this._servers[ip]
+				this.removeServerFromList(ip)
 
-				var option = document.getElementById(key);
-				option.remove(option.selectedIndex)
-
-				if (select.length == 0) {
-					select.selectedIndex = -1
-				}
 			}
 
 		}, this);
@@ -163,8 +150,8 @@ class Client {
 		}
 	}
 
-	reconnect(ip, port){
-		if(this._connected){
+	reconnect(ip, port) {
+		if (this._connected) {
 			this.disconnect()
 		}
 
@@ -206,6 +193,29 @@ class Client {
 	clearParams() {
 		document.getElementById("paramList").innerHTML = ""
 	}
+
+	addServerToList(ip) {
+		if (document.getElementById(ip) === null) {
+			const INFO = this._servers[ip]
+			const option = document.createElement("option")
+			option.value = `${INFO.ip}:${INFO.port}`
+			option.id = ip
+			option.innerHTML = `${INFO.appName} @ ${INFO.computerName} (${INFO.ip}:${INFO.port})`
+
+			document.getElementById("servers").appendChild(option)
+		}
+	}
+
+	removeServerFromList(ip) {
+		const select = document.getElementById("servers")
+		const option = document.getElementById(ip);
+		option.remove(option.selectedIndex)
+
+		if (select.length == 0) {
+			select.selectedIndex = -1
+		}
+	}
+
 
 
 }

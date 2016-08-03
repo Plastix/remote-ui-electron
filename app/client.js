@@ -192,6 +192,7 @@ class Client {
 
 	clearParams() {
 		document.getElementById("paramList").innerHTML = ""
+		document.getElementById("groups").innerHTML = "" // Clear groups dropdown
 	}
 
 	addServerToList(ip) {

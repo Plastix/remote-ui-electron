@@ -9,17 +9,16 @@
 </head>
 
 <body>
-    <h1>Remote UI Client</h1>
-    <div id="paramList">
+    <div id="header">
+        Servers:
+        <select id="servers"></select>
+        <button type="button" id="connectButton">Connect</button>
+        Groups
+        <select id="groups"></select>
+        Filter
+        <input type="text" id="filterParams">
     </div>
-
-    <div id="bottomToolbar">
-    Servers:
-    <select id="servers"></select>
-    <button type="button" id="connectButton">Connect</button>
-
-    Filter
-    <input type="text" id="filterParams">
+    <div id="paramList">
     </div>
 </body>
 <script>

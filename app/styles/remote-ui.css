@@ -4,11 +4,6 @@ body {
     background-color: WhiteSmoke;
 }
 
-h1 {
-    padding: 5px;
-    margin: 0px;
-}
-
 #paramList {
     column-gap: 0px;
     column-count: 1;
@@ -53,6 +48,7 @@ h1 {
     margin: 0 auto;
 }
 
+
 /* Input Textboxes above Sliders */
 
 .display {
@@ -63,18 +59,13 @@ h1 {
     border: none;
 }
 
-#bottomToolbar {
-    position: fixed;
-    z-index: 100;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: LightGray;
-    padding: 10px;
+#header select {
+    width: 150px;
 }
 
-#bottomToolbar select {
-    width: 150px;
+#header {
+    background-color: LightGray;
+    padding: 5px;
 }
 
 

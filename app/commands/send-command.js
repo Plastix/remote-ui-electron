@@ -88,10 +88,22 @@ function addNumber(client, name, type, args) {
 	var div = document.createElement("div")
 	div.innerHTML = name
 	div.className += "paramItem"
-	var display = document.createElement("span")
+
+	var display = document.createElement("input")
+	display.type = "number"
 	display.className += "display"
-	display.innerHTML = CURRENT
+	display.value = CURRENT
+	display.defaultValue = CURRENT
+	display.min = args[1]
+	display.max = args[2]
 	div.appendChild(display)
+
+	display.oninput = () => {
+		const value = parseFloat(display.value)
+		args[0] = value
+		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
+		client.send(message, args)
+	}
 
 	var slider = document.createElement("input")
 	slider.type = "range"
@@ -113,7 +125,7 @@ function addNumber(client, name, type, args) {
 		args[0] = value
 		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
 		client.send(message, args)
-		display.innerHTML = value
+		display.value = value
 	}
 
 	div.appendChild(slider)
@@ -126,7 +138,7 @@ function updateNumber(div, args) {
 
 	const CURRENT = util.roundFloat(args[0])
 	slider.value = CURRENT
-	display.innerHTML = CURRENT
+	display.value = CURRENT
 }
 
 function addBoolean(client, name, type, args) {

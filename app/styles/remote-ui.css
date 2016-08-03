@@ -9,10 +9,14 @@ h1 {
     margin: 0px;
 }
 
+#paramList {
+    column-gap: 0px;
+    column-count: 1;
+}
+
 .paramGroup {
     font-size: 30px;
-    padding: 5px;
-    padding-bottom: 10px;
+    padding: 7px;
     font-weight: bold;
     color: white;
     text-shadow: 0px 1px 2px #000000;
@@ -28,11 +32,11 @@ h1 {
     break-inside: avoid-column;
 }
 
+
+/* All input fields */
+
 .paramItem input {
-    /* Input Width pretty hacky fix */
-    width: 95%;
-    padding: 0px;
-    margin: 0px;
+    margin-left: 5px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     -o-box-sizing: border-box;
@@ -40,13 +44,23 @@ h1 {
     box-sizing: border-box;
 }
 
-.paramItem select {
-    width: 95%;
+
+/* Sliders */
+
+.paramItem input[type=range] {
+    /* Input Width pretty hacky fix */
+    width: 100%;
+    margin: 0 auto;
 }
 
+/* Input Textboxes above Sliders */
+
 .display {
-    margin-left: 5px;
+    font-size: 16px;
+    width: 50%;
     font-weight: bold;
+    background: transparent;
+    border: none;
 }
 
 #bottomToolbar {
@@ -69,11 +83,6 @@ h1 {
 @media only screen and (min-width: 500px) {
     #paramList {
         column-count: 2;
-        column-gap: 0px;
-    }
-    .paramGroup {
-        float: left;
-        width: 100%;
     }
 }
 

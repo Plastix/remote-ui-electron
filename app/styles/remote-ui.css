@@ -7,6 +7,7 @@ body {
 #paramList {
     column-gap: 0px;
     column-count: 1;
+    -webkit-column-count: 1
 }
 
 .paramGroup {
@@ -74,6 +75,7 @@ body {
 @media only screen and (min-width: 500px) {
     #paramList {
         column-count: 2;
+        -webkit-column-count: 2;
     }
 }
 
@@ -83,5 +85,6 @@ body {
 @media only screen and (min-width: 1000px) {
     #paramList {
         column-count: 3;
+        -webkit-column-count: 3
     }
 }

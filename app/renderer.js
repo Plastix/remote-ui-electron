@@ -21,3 +21,12 @@ button.onclick = () => {
 		}
 	}
 }
+
+select.onchange = () => {
+	const raw = select.value
+
+	if (raw !== "") {
+		const value = raw.split(":")
+		client.reconnect(value[0], parseInt(value[1]))
+	}
+}

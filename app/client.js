@@ -163,6 +163,14 @@ class Client {
 		}
 	}
 
+	reconnect(ip, port){
+		if(this._connected){
+			this.disconnect()
+		}
+
+		this.connect(ip, port)
+	}
+
 	// Sends an OSC packet to the RemoteUI server, if connected
 	send(command, args) {
 		if (this._connected) {

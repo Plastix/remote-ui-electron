@@ -135,6 +135,7 @@ class Client {
 
 			// Clear all current params
 			this.clearParams()
+			this.clearGroupFilters()
 
 			console.log("Disconnecting from server...")
 			this.send(constants.RUI_PACKET_DISCONNECT)
@@ -192,7 +193,11 @@ class Client {
 
 	clearParams() {
 		document.getElementById("paramList").innerHTML = ""
+	}
+
+	clearGroupFilters() {
 		document.getElementById("groups").innerHTML = "" // Clear groups dropdown
+
 	}
 
 	addServerToList(ip) {

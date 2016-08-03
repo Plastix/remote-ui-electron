@@ -12,6 +12,7 @@
     "electron-prebuilt": "1.2.8"
   },
   "dependencies": {
+    "fuzzysearch": "^1.0.3",
     "osc": "plastix/osc.js"
   }
 }

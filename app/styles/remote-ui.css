@@ -60,6 +60,10 @@ body {
     border: none;
 }
 
+.groupPresetToolbar {
+	margin-bottom: 5px;
+}
+
 #header select {
     width: 150px;
 }

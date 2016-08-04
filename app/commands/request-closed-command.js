@@ -7,9 +7,15 @@ exports.trigger = constants.RUI_PACKET_REQUEST_PARAMS
 const ALL_PARAM_VALUE = "*"
 
 exports.execute = function(client, message, args) {
+
+	// Server closed the request
+	// We should have all params now
 	if (args[0] == constants.RUI_STATUS_OK) {
 		console.log("Got all params from server!")
 
+		client.clearGroupFilters()
+
+		// Populate the group filter dropdown menu
 		updateGroupPicker()
 	}
 }
@@ -20,7 +26,7 @@ function updateGroupPicker() {
 	// Add special option "All Params" for showing all
 	const allParams = document.createElement("option")
 	allParams.value = ALL_PARAM_VALUE
-	allParams.innerHTML = "All Params"
+	allParams.innerHTML = "ALL_PARAMS"
 	select.appendChild(allParams)
 
 	const groups = document.getElementsByClassName('paramGroup')

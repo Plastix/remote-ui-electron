@@ -56,3 +56,14 @@ exports.hexToRgb = function(hex) {
         b: parseInt(result[3], 16)
     } : null;
 }
+
+exports.clearTagById = function(id){
+	document.getElementById(id).innerHTML = ""
+}
+
+exports.clearTagsByClass = function(className){
+	const classes = document.getElementsByClassName(className)
+	for (var i = classes.length - 1; i >= 0; i--) {
+		classes[i].innerHTML = ""
+	}
+}

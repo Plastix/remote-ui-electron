@@ -48,14 +48,14 @@ exports.execute = function(client, message, args) {
 
 	function addItem() {
 		if (type in setup) {
-			var div = setup[type](client, name, type, args)
+			const div = setup[type](client, name, type, args)
 			div.id = name
 			// For a spacer argument append the spacer directly to the paramList div
 			if (type == constants.RUI_ARG_SPACER) {
 				paramList.appendChild(div)
 			} else { // For actual params, nest inside of the spacer div
 				const group = args[args.length - 1].split(" ").join("_") // Param group is always last arg
-				let spacer = document.getElementById(group)
+				const spacer = document.getElementById(group)
 
 				// If we don't have a param group yet, create one
 				// This is in the off chance that we get a param before an actual spacer
@@ -75,21 +75,28 @@ exports.execute = function(client, message, args) {
 
 
 function addSpacer(client, name, type, args) {
-	var div = document.createElement("div")
+	const div = document.createElement("div")
 	div.className += "paramGroup"
 	div.innerHTML = args[0]
 	div.style.background = util.rgba(args[1], args[2], args[3], args[4])
+
+	const presetToolbar = document.createElement("div")
+	presetToolbar.className += "groupPresetToolbar"
+	const select = document.createElement("select")
+	select.className += "groupPresetSelect"
+	presetToolbar.appendChild(select)
+	div.appendChild(presetToolbar)
 	return div
 }
 
 function addNumber(client, name, type, args) {
 	const CURRENT = util.roundFloat(args[0])
 
-	var div = document.createElement("div")
+	const div = document.createElement("div")
 	div.innerHTML = name
 	div.className += "paramItem"
 
-	var display = document.createElement("input")
+	const display = document.createElement("input")
 	display.type = "number"
 	display.className += "display"
 	display.value = CURRENT
@@ -105,7 +112,7 @@ function addNumber(client, name, type, args) {
 		client.send(message, args)
 	}
 
-	var slider = document.createElement("input")
+	const slider = document.createElement("input")
 	slider.type = "range"
 	slider.value = CURRENT
 	slider.defaultValue = CURRENT
@@ -133,8 +140,8 @@ function addNumber(client, name, type, args) {
 }
 
 function updateNumber(div, args) {
-	var slider = div.getElementsByTagName("input")[0]
-	var display = div.getElementsByClassName("display")[0]
+	const slider = div.getElementsByTagName("input")[0]
+	const display = div.getElementsByClassName("display")[0]
 
 	const CURRENT = util.roundFloat(args[0])
 	slider.value = CURRENT
@@ -142,11 +149,11 @@ function updateNumber(div, args) {
 }
 
 function addBoolean(client, name, type, args) {
-	var div = document.createElement("div")
+	const div = document.createElement("div")
 	div.innerHTML = name
 	div.className += "paramItem"
 
-	var checkbox = document.createElement("input")
+	const checkbox = document.createElement("input")
 	checkbox.type = 'checkbox'
 	checkbox.checked = args[0]
 
@@ -162,17 +169,17 @@ function addBoolean(client, name, type, args) {
 
 
 function updateBoolean(div, args) {
-	var checkbox = div.getElementsByTagName("input")[0]
+	const checkbox = div.getElementsByTagName("input")[0]
 
 	checkbox.checked = args[0]
 }
 
 function addString(client, name, type, args) {
-	var div = document.createElement("div")
+	const div = document.createElement("div")
 	div.innerHTML = name
 	div.className += "paramItem"
 
-	var textbox = document.createElement("input")
+	const textbox = document.createElement("input")
 	textbox.type = 'text'
 	textbox.value = args[0]
 
@@ -187,22 +194,22 @@ function addString(client, name, type, args) {
 }
 
 function updateString(div, args) {
-	var textbox = div.getElementsByTagName("input")[0]
+	const textbox = div.getElementsByTagName("input")[0]
 
 	textbox.value = args[0]
 }
 
 function addEnum(client, name, type, args) {
-	var div = document.createElement("div")
+	const div = document.createElement("div")
 	div.innerHTML = name
 	div.className += "paramItem"
 
 	const selected = args[0] + 3
 	const num = args[2]
-	var select = document.createElement("select")
+	const select = document.createElement("select")
 	for (var i = 3; i <= 3 + num; i++) {
 		const val = args[i]
-		var option = document.createElement("option")
+		const option = document.createElement("option")
 		option.value = i - 3
 		option.innerHTML = val
 		if (i == selected) {
@@ -224,7 +231,7 @@ function addEnum(client, name, type, args) {
 function updateEnum(div, args) {
 	const selected = args[0]
 
-	var options = document.getElementsByTagName("option")
+	const options = document.getElementsByTagName("option")
 
 	for (var i = 0; i < options.length; i++) {
 		options[i].removeAttribute("selected")
@@ -234,13 +241,13 @@ function updateEnum(div, args) {
 }
 
 function addColor(client, name, type, args) {
-	var div = document.createElement("div")
+	const div = document.createElement("div")
 	div.innerHTML = name
 	div.className += "paramItem"
 
 	// HTML 5 color picker only works in Chrome + Opera!
 	// Luckoly Electron runs on Chromium!
-	var color = document.createElement("input")
+	const color = document.createElement("input")
 	color.type = "color"
 	color.value = util.rgbToHex(args[0], args[1], args[2])
 
@@ -258,7 +265,7 @@ function addColor(client, name, type, args) {
 }
 
 function updateColor(div, args) {
-	var color = div.getElementsByTagName("input")[0]
+	const color = div.getElementsByTagName("input")[0]
 
 	color.value = util.rgbToHex(args[0], args[1], args[2])
 }

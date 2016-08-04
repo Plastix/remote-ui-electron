@@ -10,6 +10,7 @@ exports.execute = function(client, message, args) {
 
 	// Server closed the request
 	// We should have all params now
+	// Since we have all params, we can add all group filters
 	if (args[0] == constants.RUI_STATUS_OK) {
 		console.log("Got all params from server!")
 

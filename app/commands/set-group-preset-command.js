@@ -2,10 +2,11 @@ const constants = require("../constants.js")
 
 var exports = module.exports = {}
 
-exports.trigger = constants.RUI_PACKET_DISCONNECT
+exports.trigger = constants.RUI_PACKET_GROUP_PRESET_SET
 
 exports.execute = function(client, message, args) {
 
-	// If the server is shutting down, disconnect the client
-	client.disconnect()
+	// Server said the group preset was set
+	// Sync new params
+	client.sync()
 }

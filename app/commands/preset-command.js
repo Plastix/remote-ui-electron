@@ -24,10 +24,10 @@ exports.execute = function(client, message, args) {
 			// Uber hack. THis isn't always the case since the user can
 			// add / to preset names
 			if (preset.indexOf("/") == -1) {
-				addGlobalPreset(preset)
+				addGlobalPreset(client, preset)
 
 			} else {
-				addGroupPreset(preset)
+				addGroupPreset(client, preset)
 
 			}
 		}
@@ -35,27 +35,43 @@ exports.execute = function(client, message, args) {
 }
 
 
-function addGroupPreset(preset) {
+function addGroupPreset(client, preset) {
 	const split = preset.split("/", 2)
-	const groupId = split[0].split(" ").join("_")
+	const groupName = split[0]
+	const groupId = groupName.split(" ").join("_")
 	const presetName = split[1]
 
 	const select = document.getElementById(groupId).getElementsByClassName('groupPresetSelect')[0]
 	const option = document.createElement("option")
-	option.value = groupId
+	option.value = preset
 	option.innerHTML = presetName
+
+	select.onchange = () => {
+		const value = select.value
+		if (value != "") {
+			client.send(constants.RUI_PACKET_GROUP_PRESET_SET, [presetName, groupName])
+		}
+	}
 
 	select.appendChild(option)
 }
 
-function addGlobalPreset(preset) {
-	const presets = document.getElementById("globalPresets")
+function addGlobalPreset(client, preset) {
+	const select = document.getElementById("globalPresets")
 
 	const option = document.createElement("option")
 	option.value = preset
 	option.innerHTML = preset
 
-	presets.appendChild(option)
+
+	select.onchange = () => {
+		const value = select.value
+		if (value != "") {
+			client.send(constants.RUI_PACKET_PRESET_SET, [value])
+		}
+	}
+
+	select.appendChild(option)
 }
 
 function addNullGlobalPreset() {

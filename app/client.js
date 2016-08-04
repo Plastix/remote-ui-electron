@@ -133,12 +133,12 @@ class Client {
 	disconnect() {
 		if (this._connected) {
 
-			// Reset UINT32(l, h)
+			// Reset UI 
 			// clearParams() will also clear grouPresets since it gets ride of the divs
 			this.clearParams()
 			this.clearGroupFilters()
 			this.clearGlobalPresets()
-			// this.clearFilterSearch()
+			this.clearFilterSearch()
 
 			console.log("Disconnecting from server...")
 			this.send(constants.RUI_PACKET_DISCONNECT)
@@ -185,6 +185,14 @@ class Client {
 		return this._connected
 	}
 
+	sync() {
+		if (this._connected) {
+			this.send(constants.RUI_PACKET_REQUEST_PARAMS)
+		} else {
+			throw "Client is not connected!"
+		}
+	}
+
 
 	updateConnectButton() {
 		const button = document.getElementById("connectButton")
@@ -212,7 +220,7 @@ class Client {
 		util.clearTagsByClass("groupPresetSelect")
 	}
 
-	clearFilterSearch(){
+	clearFilterSearch() {
 		document.getElementById("filterParams").value = ""
 	}
 

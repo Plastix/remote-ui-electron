@@ -47,3 +47,10 @@ filter.oninput = () => {
 		}
 	}
 }
+
+const sync = document.getElementById("syncButton")
+sync.onclick = () => {
+	if(client.isConnected()){
+		client.sync()
+	}
+}

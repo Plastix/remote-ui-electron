@@ -139,6 +139,8 @@ class Client {
 			this.clearGroupFilters()
 			this.clearGlobalPresets()
 			this.clearFilterSearch()
+			this.deselectGlobalPresets()
+			this.deselectGroupPresets()
 
 			console.log("Disconnecting from server...")
 			this.send(constants.RUI_PACKET_DISCONNECT)
@@ -222,6 +224,38 @@ class Client {
 
 	clearFilterSearch() {
 		document.getElementById("filterParams").value = ""
+	}
+
+	deselectGlobalPresets() {
+		const globalPresets = document.getElementById("globalPresets")
+		globalPresets.selectedIndex = 0
+		globalPresets.index = 0
+	}
+
+	deselectGroupPresets() {
+		const dropdowns = document.getElementsByClassName('groupPresetSelect')
+		for (var i = dropdowns.length - 1; i >= 0; i--) {
+			const select = dropdowns[i]
+			select.selectedIndex = 0
+			select.index = 0
+		}
+
+	}
+
+	// Called when any param is changed
+	paramChanged(name) {
+
+		// Remove global preset when any param is changed
+		const globalPresets = document.getElementById("globalPresets")
+		globalPresets.selectedIndex = 0
+
+		// Remove group preset
+		if (name !== undefined) {
+			const paramGroup = document.getElementById(name).parentElement
+			const groupPresets = paramGroup.getElementsByClassName("groupPresetSelect")[0]
+			groupPresets.selectedIndex = 0
+		}
+
 	}
 
 	addServerToList(ip) {

@@ -10,18 +10,24 @@
 
 <body>
     <div id="header">
-        Servers:
-        <select id="servers"></select>
-        <button type="button" id="connectButton">Connect</button>
-
-        <button type="button" id="syncButton">Sync</button>
-        Groups
-        <select id="groups"></select>
-        Filter
-        <input type="text" id="filterParams">
-
-        Global Presets
-        <select id="globalPresets"></select>
+        <div>
+            Servers:
+            <select id="servers"></select>
+            <button type="button" id="connectButton">Connect</button>
+            <button type="button" id="syncButton">Sync</button>
+        </div>
+        <div>
+            Groups
+            <select id="groups"></select>
+            Filter
+            <input type="text" id="filterParams">
+        </div>
+        <div>
+            Global Presets
+            <select id="globalPresets"></select>
+            <button type="button" id="addGlobalPreset">+</button>
+            <button type="button" id="removeGlobalPreset">-</button>
+        </div>
     </div>
     <div id="paramList">
     </div>

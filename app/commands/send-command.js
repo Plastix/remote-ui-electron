@@ -50,7 +50,7 @@ exports.execute = function(client, message, args) {
 		if (type in setup) {
 			const div = setup[type](client, name, type, args)
 			div.id = name
-			// For a spacer argument append the spacer directly to the paramList div
+				// For a spacer argument append the spacer directly to the paramList div
 			if (type == constants.RUI_ARG_SPACER) {
 				paramList.appendChild(div)
 			} else { // For actual params, nest inside of the spacer div
@@ -110,6 +110,7 @@ function addNumber(client, name, type, args) {
 		args[0] = value
 		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
 		client.send(message, args)
+		paramChanged(name)
 	}
 
 	const slider = document.createElement("input")
@@ -133,6 +134,7 @@ function addNumber(client, name, type, args) {
 		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
 		client.send(message, args)
 		display.value = value
+		paramChanged(name)
 	}
 
 	div.appendChild(slider)
@@ -161,6 +163,8 @@ function addBoolean(client, name, type, args) {
 		args[0] = checkbox.checked ? 1 : 0 // RemoteUI wants an int param
 		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
 		client.send(message, args)
+		paramChanged(name)
+
 	}
 
 	div.appendChild(checkbox)
@@ -187,6 +191,8 @@ function addString(client, name, type, args) {
 		args[0] = textbox.value
 		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
 		client.send(message, args)
+		paramChanged(name)
+
 	}
 
 	div.appendChild(textbox)
@@ -222,6 +228,8 @@ function addEnum(client, name, type, args) {
 		args[0] = parseInt(select.value)
 		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
 		client.send(message, args)
+		paramChanged(name)
+
 	}
 
 	div.appendChild(select)
@@ -258,6 +266,7 @@ function addColor(client, name, type, args) {
 		args[2] = rgb.b
 		const message = `${constants.RUI_PACKET_SEND} ${type} ${name}`
 		client.send(message, args)
+		paramChanged(name)
 	}
 
 	div.appendChild(color)
@@ -268,4 +277,20 @@ function updateColor(div, args) {
 	const color = div.getElementsByTagName("input")[0]
 
 	color.value = util.rgbToHex(args[0], args[1], args[2])
+}
+
+// Called when any param is changed
+function paramChanged(name) {
+
+	// Remove global preset when any param is changed
+	const globalPresets = document.getElementById("globalPresets")
+	globalPresets.selectedIndex = 0
+
+	// Remove group preset
+	if (name !== undefined) {
+		const paramGroup = document.getElementById(name).parentElement
+		const groupPresets = paramGroup.getElementsByClassName("groupPresetSelect")[0]
+		groupPresets.selectedIndex = 0
+	}
+
 }

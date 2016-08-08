@@ -32,6 +32,9 @@ exports.execute = function(client, message, args) {
 			}
 		}
 	}
+
+	updateGlobalPresetPosition()
+	updateGroupPresetPositions()
 }
 
 
@@ -51,6 +54,8 @@ function addGroupPreset(client, preset) {
 		if (value != "") {
 			client.send(constants.RUI_PACKET_GROUP_PRESET_SET, [presetName, groupName])
 		}
+		select.index = select.selectedIndex
+		client.deselectGlobalPresets()
 	}
 
 	select.appendChild(option)
@@ -69,6 +74,7 @@ function addGlobalPreset(client, preset) {
 		if (value != "") {
 			client.send(constants.RUI_PACKET_PRESET_SET, [value])
 		}
+		select.index = select.selectedIndex
 	}
 
 	select.appendChild(option)
@@ -90,5 +96,18 @@ function addNullGroupPresets() {
 		nullOption.value = ""
 		nullOption.innerHTML = NULL_LABEL
 		select.appendChild(nullOption)
+	}
+}
+
+function updateGlobalPresetPosition() {
+	const select = document.getElementById("globalPresets")
+	select.selectedIndex = select.index
+}
+
+function updateGroupPresetPositions() {
+	const dropdowns = document.getElementsByClassName('groupPresetSelect')
+	for (var i = dropdowns.length - 1; i >= 0; i--) {
+		const select = dropdowns[i]
+		select.selectedIndex = select.index
 	}
 }

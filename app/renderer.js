@@ -77,6 +77,7 @@ removePreset.onclick = () => {
 		console.log(selectedPreset)
 		if(selectedPreset != ""){
 			client.send(constants.RUI_PACKET_PRESET_DELETE, [selectedPreset])
+			client.deselectGlobalPresets()
 		}
 	}
 }

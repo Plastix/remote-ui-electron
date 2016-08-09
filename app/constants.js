@@ -1,5 +1,4 @@
 // Constants used throughout the app
-
 module.exports = Object.freeze({
 
 	// ofxRemoteUI constants
@@ -15,6 +14,8 @@ module.exports = Object.freeze({
 	RUI_PACKET_GROUP_PRESET_SET: "/SETp",
 	RUI_PACKET_PRESET_SAVE: "/SAVP",
 	RUI_PACKET_PRESET_DELETE: "/DELP",
+	RUI_PACKET_GROUP_PRESET_SAVE: "/SAVp",
+	RUI_PACKET_GROUP_PRESET_DELETE: "/DELp",
 	RUI_STATUS_OK: "OK",
 	RUI_NO_PRESETS: "NO_PRESETS",
 	RUI_ARG_FLOAT: "FLT",
@@ -36,6 +37,5 @@ module.exports = Object.freeze({
 	LOCAL_IP_ADDRESS: "0.0.0.0",
 
 	// Electron constants
-	ELECTRON_QUIT_CHANNEL: "quit"
-
+	ELECTRON_QUIT_CHANNEL: "quit",
 })

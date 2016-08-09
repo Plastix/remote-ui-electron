@@ -64,6 +64,10 @@ body {
 	margin-bottom: 5px;
 }
 
+.groupPresetToolbar button {
+    margin-left: 5px;
+}
+
 #header select {
     width: 150px;
 }

@@ -6,10 +6,10 @@ const client = require('./client.js'),
 	constants = require('./constants.js'),
 	fuzzysearch = require("fuzzysearch"),
 	Dialogs = require('dialogs')
-
+	 
 client.listenForServers()
 
-const dialogs = Dialogs()
+const dialog = Dialogs()
 const button = document.getElementById("connectButton")
 const select = document.getElementById("servers")
 
@@ -61,7 +61,7 @@ const addPreset = document.getElementById("addGlobalPreset")
 console.log(addPreset)
 addPreset.onclick = () => {
 	if (client.isConnected()) {
-		dialogs.prompt("Enter your preset name", (name) => {
+		dialog.prompt("Enter your preset name", (name) => {
 			if (name !== undefined && name != "") {
 				client.send(constants.RUI_PACKET_PRESET_SAVE, [name])
 			}
@@ -74,7 +74,6 @@ const removePreset = document.getElementById("removeGlobalPreset")
 removePreset.onclick = () => {
 	if (client.isConnected()) {
 		const selectedPreset = globalPresets.value
-		console.log(selectedPreset)
 		if(selectedPreset != ""){
 			client.send(constants.RUI_PACKET_PRESET_DELETE, [selectedPreset])
 			client.deselectGlobalPresets()

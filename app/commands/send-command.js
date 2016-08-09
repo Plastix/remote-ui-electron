@@ -1,6 +1,8 @@
 const constants = require("../constants.js"),
-	util = require('../util.js')
+	util = require('../util.js'),
+		Dialogs = require('dialogs')
 
+const dialog = Dialogs()
 var exports = module.exports = {}
 exports.trigger = constants.RUI_PACKET_SEND
 
@@ -84,7 +86,37 @@ function addSpacer(client, name, type, args) {
 	presetToolbar.className += "groupPresetToolbar"
 	const select = document.createElement("select")
 	select.className += "groupPresetSelect"
+
+	const addPreset = document.createElement("button")
+	addPreset.innerHTML = "+"
+	addPreset.type = "button"
+
+	addPreset.onclick = () => {
+		dialog.prompt("Enter your preset name", (name) => {
+			if (name !== undefined && name != "") {
+				const groupName = div.id.split("_").join(" ")
+				client.send(constants.RUI_PACKET_GROUP_PRESET_SAVE, [name, groupName])
+			}
+		})
+	}
+
+	const removePreset = document.createElement("button")
+	removePreset.type = "button"
+	removePreset.innerHTML = "-"
+
+	removePreset.onclick = () => {
+		if (select.value != "") {
+			const split = select.value.split("/", 2)
+			const groupName = split[0]
+			const presetName = split[1]
+			client.send(constants.RUI_PACKET_GROUP_PRESET_DELETE, [presetName, groupName])
+			// Reset specific group preset
+		}
+	}
+
 	presetToolbar.appendChild(select)
+	presetToolbar.appendChild(addPreset)
+	presetToolbar.appendChild(removePreset)
 	div.appendChild(presetToolbar)
 	return div
 }
